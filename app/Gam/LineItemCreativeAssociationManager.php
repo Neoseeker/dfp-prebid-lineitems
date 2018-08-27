@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Dfp;
+namespace App\Gam;
 
 require(__DIR__."/../../vendor/autoload.php");
 
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\DfpSession;
-use Google\AdsApi\Dfp\DfpSessionBuilder;
-use Google\AdsApi\Dfp\v201802\LineItemCreativeAssociation;
-use Google\AdsApi\Dfp\v201802\LineItemCreativeAssociationService;
-use Google\AdsApi\Dfp\v201802\Size;
-use Google\AdsApi\Dfp\Util\v201802\StatementBuilder;
+use Google\AdsApi\AdManager\AdManagerServices;
+use Google\AdsApi\AdManager\AdManagerSession;
+use Google\AdsApi\AdManager\AdManagerSessionBuilder;
+use Google\AdsApi\AdManager\v201808\LineItemCreativeAssociation;
+use Google\AdsApi\AdManager\v201808\LineItemCreativeAssociationService;
+use Google\AdsApi\AdManager\v201808\Size;
+use Google\AdsApi\AdManager\Util\v201808\StatementBuilder;
 
 
-class LineItemCreativeAssociationManager extends DfpManager
+class LineItemCreativeAssociationManager extends GamManager
 {
 	protected $lineItem;
 	protected $creativeList;
@@ -61,7 +61,7 @@ class LineItemCreativeAssociationManager extends DfpManager
 
     private function UpdateLicas($licasToBeUpdated)
     {
-        $licaService = $this->dfpServices->get($this->session, LineItemCreativeAssociationService::class);
+        $licaService = $this->gamServices->get($this->session, LineItemCreativeAssociationService::class);
         $results = $licaService->updateLineItemCreativeAssociations($this->createLicaObject($licasToBeUpdated));
         /*
         foreach ($results as $i => $lica) {
@@ -79,7 +79,7 @@ class LineItemCreativeAssociationManager extends DfpManager
 
     private function CreateLicas($licasToBeCreated)
     {
-        $licaService = $this->dfpServices->get($this->session, LineItemCreativeAssociationService::class);
+        $licaService = $this->gamServices->get($this->session, LineItemCreativeAssociationService::class);
         $results = $licaService->createLineItemCreativeAssociations($this->createLicaObject($licasToBeCreated));
         /*
         foreach ($results as $i => $lica) {
@@ -99,7 +99,7 @@ class LineItemCreativeAssociationManager extends DfpManager
 	private function GetLicasForLineItem()
 	{
 		$output = [];
-        $licaService = $this->dfpServices->get($this->session, LineItemCreativeAssociationService::class);
+        $licaService = $this->gamServices->get($this->session, LineItemCreativeAssociationService::class);
 		$pageSize = StatementBuilder::SUGGESTED_PAGE_LIMIT;
 		$statementBuilder = (new StatementBuilder())->where('lineItemId = :lineItemId')
             ->orderBy('lineItemId ASC, creativeId ASC')

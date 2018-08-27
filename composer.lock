@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "905988af2460a097fa3472beaccf749b",
+    "content-hash": "5128e7be92de650ac251f01c15f3a42e",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -101,19 +101,20 @@
         },
         {
             "name": "googleads/googleads-php-lib",
-            "version": "34.0.0",
+            "version": "37.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleads/googleads-php-lib.git",
-                "reference": "7f086c308c3abd9198a64d70da7302085c73b19d"
+                "reference": "c40058256b40c627820a575bc888e137826d84ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleads/googleads-php-lib/zipball/7f086c308c3abd9198a64d70da7302085c73b19d",
-                "reference": "7f086c308c3abd9198a64d70da7302085c73b19d",
+                "url": "https://api.github.com/repos/googleads/googleads-php-lib/zipball/c40058256b40c627820a575bc888e137826d84ff",
+                "reference": "c40058256b40c627820a575bc888e137826d84ff",
                 "shasum": ""
             },
             "require": {
+                "ext-mbstring": "*",
                 "ext-openssl": "*",
                 "ext-soap": "*",
                 "google/auth": "^1.0.0",
@@ -148,9 +149,9 @@
                     "homepage": "https://github.com/googleads/googleads-php-lib/contributors"
                 }
             ],
-            "description": "Google Ads APIs Client Library for PHP (AdWords and DFP)",
+            "description": "Google Ads APIs Client Library for PHP (AdWords and Ad Manager)",
             "homepage": "https://github.com/googleads/googleads-php-lib",
-            "time": "2018-03-28T06:13:06+00:00"
+            "time": "2018-08-21T20:15:30+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

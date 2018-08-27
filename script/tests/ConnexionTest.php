@@ -2,7 +2,7 @@
 
 require (__DIR__."/../scriptLoader.php");
 
-$traffickerId  = (new \App\Dfp\UserManager)->getUserId();
+$traffickerId  = (new \App\Gam\UserManager)->getUserId();
 
 if(is_numeric($traffickerId))
 {

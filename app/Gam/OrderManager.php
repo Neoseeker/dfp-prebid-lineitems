@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Dfp;
+namespace App\Gam;
 
 require(__DIR__."/../../vendor/autoload.php");
 
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\DfpSession;
-use Google\AdsApi\Dfp\DfpSessionBuilder;
-use Google\AdsApi\Dfp\v201802\Order;
-use Google\AdsApi\Dfp\v201802\OrderService;
-use Google\AdsApi\Dfp\Util\v201802\StatementBuilder;
-use Google\AdsApi\Dfp\v201802\ApproveOrders as ApproveOrdersAction;
+use Google\AdsApi\AdManager\AdManagerServices;
+use Google\AdsApi\AdManager\AdManagerSession;
+use Google\AdsApi\AdManager\AdManagerSessionBuilder;
+use Google\AdsApi\AdManager\v201808\Order;
+use Google\AdsApi\AdManager\v201808\OrderService;
+use Google\AdsApi\AdManager\Util\v201808\StatementBuilder;
+use Google\AdsApi\AdManager\v201808\ApproveOrders as ApproveOrdersAction;
 
-class OrderManager extends DfpManager
+class OrderManager extends GamManager
 {
 	public function setUpOrder($orderName, $advertiserId, $traffickerId)
 	{	
@@ -30,7 +30,7 @@ class OrderManager extends DfpManager
 	public function getAllOrders()
 	{
 		$output = [];
-		$orderService = $this->dfpServices->get($this->session, OrderService::class);
+		$orderService = $this->gamServices->get($this->session, OrderService::class);
 
 		$statementBuilder = (new StatementBuilder())->orderBy('id ASC');
 		$data = $orderService->getOrdersByStatement($statementBuilder->toStatement());
@@ -53,7 +53,7 @@ class OrderManager extends DfpManager
 
 	public function approveOrder($orderId)
 	{
-		$orderService = $this->dfpServices->get($this->session, OrderService::class);
+		$orderService = $this->gamServices->get($this->session, OrderService::class);
 		$statementBuilder = (new StatementBuilder())
 			->where('id = :id')
 			->withBindVariableValue('id', $orderId);
@@ -70,7 +70,7 @@ class OrderManager extends DfpManager
 	public function getOrder($orderName)
 	{
 		$output = [];
-		$orderService = $this->dfpServices->get($this->session, OrderService::class);
+		$orderService = $this->gamServices->get($this->session, OrderService::class);
 		$statementBuilder = (new StatementBuilder())
 			->orderBy('id ASC')
 			->where('name = :name')
@@ -93,7 +93,7 @@ class OrderManager extends DfpManager
 	public function createOrder($orderName, $advertiserId, $traffickerId)
 	{
 		$output = [];
-		$orderService = $this->dfpServices->get($this->session, OrderService::class);
+		$orderService = $this->gamServices->get($this->session, OrderService::class);
 		$order = new Order();
         $order->setName($orderName);
         $order->setAdvertiserId($advertiserId);

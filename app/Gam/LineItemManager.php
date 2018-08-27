@@ -1,40 +1,40 @@
 <?php
 
-namespace App\Dfp;
+namespace App\Gam;
 
 require(__DIR__."/../../vendor/autoload.php");
 
 use DateTime;
 use DateTimeZone;
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\DfpSession;
-use Google\AdsApi\Dfp\DfpSessionBuilder;
-use Google\AdsApi\Dfp\Util\v201802\DfpDateTimes;
-use Google\AdsApi\Dfp\v201802\AdUnitTargeting;
-use Google\AdsApi\Dfp\v201802\CostType;
-use Google\AdsApi\Dfp\v201802\CreativePlaceholder;
-use Google\AdsApi\Dfp\v201802\CreativeRotationType;
-use Google\AdsApi\Dfp\v201802\CustomCriteria;
-use Google\AdsApi\Dfp\v201802\CustomCriteriaComparisonOperator;
-use Google\AdsApi\Dfp\v201802\CustomCriteriaSet;
-use Google\AdsApi\Dfp\v201802\CustomCriteriaSetLogicalOperator;
-use Google\AdsApi\Dfp\v201802\Goal;
-use Google\AdsApi\Dfp\v201802\GoalType;
-use Google\AdsApi\Dfp\v201802\InventoryTargeting;
-use Google\AdsApi\Dfp\v201802\LineItem;
-use Google\AdsApi\Dfp\v201802\LineItemService;
-use Google\AdsApi\Dfp\v201802\LineItemType;
-use Google\AdsApi\Dfp\v201802\Money;
-use Google\AdsApi\Dfp\v201802\NetworkService;
-use Google\AdsApi\Dfp\v201802\Size;
-use Google\AdsApi\Dfp\v201802\StartDateTimeType;
-use Google\AdsApi\Dfp\v201802\Targeting;
-use Google\AdsApi\Dfp\v201802\UnitType;
-use Google\AdsApi\Dfp\Util\v201802\StatementBuilder;
+use Google\AdsApi\AdManager\AdManagerServices;
+use Google\AdsApi\AdManager\AdManagerSession;
+use Google\AdsApi\AdManager\AdManagerSessionBuilder;
+use Google\AdsApi\AdManager\Util\v201808\AdManagerDateTimes;
+use Google\AdsApi\AdManager\v201808\AdUnitTargeting;
+use Google\AdsApi\AdManager\v201808\CostType;
+use Google\AdsApi\AdManager\v201808\CreativePlaceholder;
+use Google\AdsApi\AdManager\v201808\CreativeRotationType;
+use Google\AdsApi\AdManager\v201808\CustomCriteria;
+use Google\AdsApi\AdManager\v201808\CustomCriteriaComparisonOperator;
+use Google\AdsApi\AdManager\v201808\CustomCriteriaSet;
+use Google\AdsApi\AdManager\v201808\CustomCriteriaSetLogicalOperator;
+use Google\AdsApi\AdManager\v201808\Goal;
+use Google\AdsApi\AdManager\v201808\GoalType;
+use Google\AdsApi\AdManager\v201808\InventoryTargeting;
+use Google\AdsApi\AdManager\v201808\LineItem;
+use Google\AdsApi\AdManager\v201808\LineItemService;
+use Google\AdsApi\AdManager\v201808\LineItemType;
+use Google\AdsApi\AdManager\v201808\Money;
+use Google\AdsApi\AdManager\v201808\NetworkService;
+use Google\AdsApi\AdManager\v201808\Size;
+use Google\AdsApi\AdManager\v201808\StartDateTimeType;
+use Google\AdsApi\AdManager\v201808\Targeting;
+use Google\AdsApi\AdManager\v201808\UnitType;
+use Google\AdsApi\AdManager\Util\v201808\StatementBuilder;
 
 
-class LineItemManager extends DfpManager
+class LineItemManager extends GamManager
 {
 	protected $orderId;
     protected $sizes;
@@ -120,7 +120,7 @@ class LineItemManager extends DfpManager
     public function getAllLineItems()
 	{
 		$output = [];
-		$lineItemService = $this->dfpServices->get($this->session, LineItemService::class);
+		$lineItemService = $this->gamServices->get($this->session, LineItemService::class);
 
 		$statementBuilder = (new StatementBuilder())->orderBy('id ASC');
 		$data = $lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
@@ -137,7 +137,7 @@ class LineItemManager extends DfpManager
     public function getLineItem()
     {
         $output = "";
-        $lineItemService = $this->dfpServices->get($this->session, LineItemService::class);
+        $lineItemService = $this->gamServices->get($this->session, LineItemService::class);
         $statementBuilder = (new StatementBuilder())
             ->orderBy('id ASC')
             ->where('name = :name')
@@ -155,7 +155,7 @@ class LineItemManager extends DfpManager
 	public function createLineItem()
 	{
 		$output = [];
-		$lineItemService = $this->dfpServices->get($this->session, LineItemService::class);
+		$lineItemService = $this->gamServices->get($this->session, LineItemService::class);
         
         $results = $lineItemService->createLineItems([$this->setUpHeaderBiddingLineItem()
             ->setStartDateTimeType(StartDateTimeType::IMMEDIATELY)
@@ -176,7 +176,7 @@ class LineItemManager extends DfpManager
     {
         $output = [];
 
-        $lineItemService = $this->dfpServices->get($this->session, LineItemService::class);
+        $lineItemService = $this->gamServices->get($this->session, LineItemService::class);
         $results = $lineItemService->updateLineItems([$this->setUpHeaderBiddingLineItem()
             ->setId($lineItem->getId())
             ->setStartDateTime($lineItem->getStartDateTime())
