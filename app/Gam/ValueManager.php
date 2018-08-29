@@ -1,25 +1,25 @@
 <?php
 
-namespace App\Dfp;
+namespace App\Gam;
 
 require(__DIR__."/../../vendor/autoload.php");
 
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\DfpSession;
-use Google\AdsApi\Dfp\DfpSessionBuilder;
-use Google\AdsApi\Dfp\v201802\CustomTargetingKey;
-use Google\AdsApi\Dfp\v201802\CustomTargetingKeyType;
-use Google\AdsApi\Dfp\v201802\CustomTargetingService;
-use Google\AdsApi\Dfp\v201802\CustomTargetingValue;
-use Google\AdsApi\Dfp\v201802\CustomTargetingValueMatchType;
-use Google\AdsApi\Dfp\Util\v201802\StatementBuilder;
+use Google\AdsApi\AdManager\AdManagerServices;
+use Google\AdsApi\AdManager\AdManagerSession;
+use Google\AdsApi\AdManager\AdManagerSessionBuilder;
+use Google\AdsApi\AdManager\v201808\CustomTargetingKey;
+use Google\AdsApi\AdManager\v201808\CustomTargetingKeyType;
+use Google\AdsApi\AdManager\v201808\CustomTargetingService;
+use Google\AdsApi\AdManager\v201808\CustomTargetingValue;
+use Google\AdsApi\AdManager\v201808\CustomTargetingValueMatchType;
+use Google\AdsApi\AdManager\Util\v201808\StatementBuilder;
 
-class ValueManager extends DfpManager
+class ValueManager extends GamManager
 {
 
 	protected $keyId;
-	protected $existingDFPValues;
+	protected $existingGAMValues;
 
 	public function setKeyId($keyId)
 	{
@@ -32,10 +32,10 @@ class ValueManager extends DfpManager
 		return $this->existingValues;
 	}
 
-	public function convertValuesListToDFPValuesList($valuesList)
+	public function convertValuesListToGAMValuesList($valuesList)
 	{
-		//We get from DFP which keys already exists
-		$existing = $this->getExistingValuesFromDFP();
+		//We get from GAM which keys already exists
+		$existing = $this->getExistingValuesFromGAM();
 
 		//We create a table with only existing keys
 		$existingValuesList = [];
@@ -75,7 +75,7 @@ class ValueManager extends DfpManager
 			exit;
 		}
 
-		$customTargetingService = $this->dfpServices->get($this->session, CustomTargetingService::class);
+		$customTargetingService = $this->gamServices->get($this->session, CustomTargetingService::class);
 		$output = [];
 		$values = [];
 		foreach ($valuesToBeCreated as $value)
@@ -108,11 +108,11 @@ class ValueManager extends DfpManager
 	}
 
 
-	public function getExistingValuesFromDFP()
+	public function getExistingValuesFromGAM()
 	{	
 		$output = [];
 		$pageSize = StatementBuilder::SUGGESTED_PAGE_LIMIT;
-		$customTargetingService = $this->dfpServices->get($this->session, CustomTargetingService::class);
+		$customTargetingService = $this->gamServices->get($this->session, CustomTargetingService::class);
 		$statementBuilder = (new StatementBuilder())->where('customTargetingKeyId = :customTargetingKeyId')
             ->orderBy('id ASC')
             ->limit($pageSize);

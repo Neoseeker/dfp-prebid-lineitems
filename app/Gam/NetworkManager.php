@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Dfp;
+namespace App\Gam;
 
 require(__DIR__."/../../vendor/autoload.php");
 
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\DfpSession;
-use Google\AdsApi\Dfp\DfpSessionBuilder;
-use Google\AdsApi\Dfp\v201802\NetworkService;
+use Google\AdsApi\AdManager\AdManagerServices;
+use Google\AdsApi\AdManager\AdManagerSession;
+use Google\AdsApi\AdManager\AdManagerSessionBuilder;
+use Google\AdsApi\AdManager\v201808\NetworkService;
 
-class NetworkManager extends DfpManager
+class NetworkManager extends GamManager
 {
 	
-	protected $dfpServices;
+	protected $gamServices;
 	protected $session;
 
 	public function getCurrentNetwork()
 	{
-		$networkService  = $this->dfpServices->get($this->session, NetworkService::class);
+		$networkService  = $this->gamServices->get($this->session, NetworkService::class);
 
 		$network = $networkService->getCurrentNetwork();
 		
@@ -32,7 +32,7 @@ class NetworkManager extends DfpManager
 
 	public function makeTestNetwork()
 	{
-		$networkService  = $this->dfpServices->get($this->session, NetworkService::class);
+		$networkService  = $this->gamServices->get($this->session, NetworkService::class);
 		$network = $networkService->makeTestNetwork();
 
 		printf(

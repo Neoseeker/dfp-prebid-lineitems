@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Dfp;
+namespace App\Gam;
 
 require(__DIR__."/../../vendor/autoload.php");
 
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\DfpSession;
-use Google\AdsApi\Dfp\DfpSessionBuilder;
-use Google\AdsApi\Dfp\v201802\UserService;
-use Google\AdsApi\Dfp\v201802\User;
-use Google\AdsApi\Dfp\Util\v201802\StatementBuilder;
+use Google\AdsApi\AdManager\AdManagerServices;
+use Google\AdsApi\AdManager\AdManagerSession;
+use Google\AdsApi\AdManager\AdManagerSessionBuilder;
+use Google\AdsApi\AdManager\v201808\UserService;
+use Google\AdsApi\AdManager\v201808\User;
+use Google\AdsApi\AdManager\Util\v201808\StatementBuilder;
 
-class UserManager extends DfpManager
+class UserManager extends GamManager
 {
 	protected $user;
 
 	public function getCurrentUser()
 	{
-		$userService = $this->dfpServices->get($this->session, UserService::class);
+		$userService = $this->gamServices->get($this->session, UserService::class);
 
 		$user = $userService->getCurrentUser();
         $output = array(
@@ -33,7 +33,7 @@ class UserManager extends DfpManager
 
 	public function createUser()
 	{
-		 $userService = $this->dfpServices->get($this->session, UserService::class);
+		 $userService = $this->gamServices->get($this->session, UserService::class);
 		$user = new User();
         $user->setName('Gabriel');
         $user->setEmail('gabriel@insideall.com');
@@ -60,7 +60,7 @@ class UserManager extends DfpManager
 
 	public function getAllUsers()
 	{
-		$userService = $this->dfpServices->get($this->session, UserService::class);
+		$userService = $this->gamServices->get($this->session, UserService::class);
 		$statementBuilder = (new StatementBuilder())->orderBy('id ASC');
 		$data = $userService->getUsersByStatement(
             $statementBuilder->toStatement()

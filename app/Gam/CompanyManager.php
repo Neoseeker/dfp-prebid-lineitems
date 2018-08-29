@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Dfp;
+namespace App\Gam;
 
 require(__DIR__."/../../vendor/autoload.php");
 
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\DfpSession;
-use Google\AdsApi\Dfp\DfpSessionBuilder;
-use Google\AdsApi\Dfp\v201802\Company;
-use Google\AdsApi\Dfp\v201802\CompanyService;
-use Google\AdsApi\Dfp\v201802\CompanyType;
-use Google\AdsApi\Dfp\Util\v201802\StatementBuilder;
+use Google\AdsApi\AdManager\AdManagerServices;
+use Google\AdsApi\AdManager\AdManagerSession;
+use Google\AdsApi\AdManager\AdManagerSessionBuilder;
+use Google\AdsApi\AdManager\v201808\Company;
+use Google\AdsApi\AdManager\v201808\CompanyService;
+use Google\AdsApi\AdManager\v201808\CompanyType;
+use Google\AdsApi\AdManager\Util\v201808\StatementBuilder;
 
-class CompanyManager extends DfpManager
+class CompanyManager extends GamManager
 {
 	
 	public function setUpCompany($companyName)
@@ -29,7 +29,7 @@ class CompanyManager extends DfpManager
 	{
 		$output = [];
 
-		$companyService = $this->dfpServices->get($this->session, CompanyService::class);
+		$companyService = $this->gamServices->get($this->session, CompanyService::class);
 		$company = new Company();
 	    $company->setName($companyName);
 	    $company->setType(CompanyType::ADVERTISER);
@@ -49,7 +49,7 @@ class CompanyManager extends DfpManager
 	public function getAllCompanies()
 	{
 		$output = [];
-		$companyService = $this->dfpServices->get($this->session, CompanyService::class);
+		$companyService = $this->gamServices->get($this->session, CompanyService::class);
 		$statementBuilder = (new StatementBuilder())->orderBy('id ASC');
 		$data = $companyService->getCompaniesByStatement($statementBuilder->toStatement());
 		if ($data->getResults() !== null)
@@ -68,7 +68,7 @@ class CompanyManager extends DfpManager
 	public function getCompany($companyName)
 	{
 		$output = [];
-		$companyService = $this->dfpServices->get($this->session, CompanyService::class);
+		$companyService = $this->gamServices->get($this->session, CompanyService::class);
 		$statementBuilder = (new StatementBuilder())
 			->orderBy('id ASC')
 			->where('name = :name')

@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Dfp;
+namespace App\Gam;
 
 require(__DIR__."/../../vendor/autoload.php");
 
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\DfpSession;
-use Google\AdsApi\Dfp\DfpSessionBuilder;
-use Google\AdsApi\Dfp\v201802\CustomTargetingKey;
-use Google\AdsApi\Dfp\v201802\CustomTargetingKeyType;
-use Google\AdsApi\Dfp\v201802\CustomTargetingService;
-use Google\AdsApi\Dfp\v201802\CustomTargetingValue;
-use Google\AdsApi\Dfp\v201802\CustomTargetingValueMatchType;
-use Google\AdsApi\Dfp\Util\v201802\StatementBuilder;
+use Google\AdsApi\AdManager\AdManagerServices;
+use Google\AdsApi\AdManager\AdManagerSession;
+use Google\AdsApi\AdManager\AdManagerSessionBuilder;
+use Google\AdsApi\AdManager\v201808\CustomTargetingKey;
+use Google\AdsApi\AdManager\v201808\CustomTargetingKeyType;
+use Google\AdsApi\AdManager\v201808\CustomTargetingService;
+use Google\AdsApi\AdManager\v201808\CustomTargetingValue;
+use Google\AdsApi\AdManager\v201808\CustomTargetingValueMatchType;
+use Google\AdsApi\AdManager\Util\v201808\StatementBuilder;
 
-class KeyManager extends DfpManager
+class KeyManager extends GamManager
 {
 	
 	public function setUpCustomTargetingKey($keyName)
@@ -31,7 +31,7 @@ class KeyManager extends DfpManager
 	public function createCustomTargetingKey($keyName)
 	{
 		$output = [];
-		$customTargetingService = $this->dfpServices->get($this->session, CustomTargetingService::class);
+		$customTargetingService = $this->gamServices->get($this->session, CustomTargetingService::class);
 		$key = new CustomTargetingKey();
 		$key->setDisplayName($keyName);
 		$key->setName($keyName);
@@ -52,7 +52,7 @@ class KeyManager extends DfpManager
 	public function getAllCustomTargetingKeys()
 	{	
 		$output = [];
-		$customTargetingService = $this->dfpServices->get($this->session, CustomTargetingService::class);
+		$customTargetingService = $this->gamServices->get($this->session, CustomTargetingService::class);
 		$statementBuilder = (new StatementBuilder())->orderBy('id ASC');
 		$data = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->toStatement());
 		if($data->getResults() == null)
@@ -73,7 +73,7 @@ class KeyManager extends DfpManager
 	public function getCustomTargetingKey($keyName)
 	{	
 		$output = [];
-		$customTargetingService = $this->dfpServices->get($this->session, CustomTargetingService::class);
+		$customTargetingService = $this->gamServices->get($this->session, CustomTargetingService::class);
 		$statementBuilder = (new StatementBuilder())
 			->orderBy('id ASC')
 			->where('name = :name')

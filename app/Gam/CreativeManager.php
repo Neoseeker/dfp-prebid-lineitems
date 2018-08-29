@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Dfp;
+namespace App\Gam;
 
 require(__DIR__."/../../vendor/autoload.php");
 
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\DfpSession;
-use Google\AdsApi\Dfp\DfpSessionBuilder;
-use Google\AdsApi\Dfp\Util\v201802\StatementBuilder;
-use Google\AdsApi\Dfp\v201802\CreativeAsset;
-use Google\AdsApi\Dfp\v201802\CreativeService;
-use Google\AdsApi\Dfp\v201802\ThirdPartyCreative;
-use Google\AdsApi\Dfp\v201802\Size;
+use Google\AdsApi\AdManager\AdManagerServices;
+use Google\AdsApi\AdManager\AdManagerSession;
+use Google\AdsApi\AdManager\AdManagerSessionBuilder;
+use Google\AdsApi\AdManager\Util\v201808\StatementBuilder;
+use Google\AdsApi\AdManager\v201808\CreativeAsset;
+use Google\AdsApi\AdManager\v201808\CreativeService;
+use Google\AdsApi\AdManager\v201808\ThirdPartyCreative;
+use Google\AdsApi\AdManager\v201808\Size;
 
-class CreativeManager extends DfpManager
+class CreativeManager extends GamManager
 {
 	protected $ssp;
 	protected $advertiserId;
@@ -61,7 +61,7 @@ class CreativeManager extends DfpManager
 	public function getAllCreatives()
 	{
 		$output = [];
-		$creativeService = $this->dfpServices->get($this->session, CreativeService::class);
+		$creativeService = $this->gamServices->get($this->session, CreativeService::class);
 		$pageSize = StatementBuilder::SUGGESTED_PAGE_LIMIT;
 		$statementBuilder = (new StatementBuilder())->orderBy('id ASC')
 			->limit($pageSize);
@@ -90,7 +90,7 @@ class CreativeManager extends DfpManager
 	public function getCreative($creativeName)
 	{
 		$output = [];
-		$creativeService = $this->dfpServices->get($this->session, CreativeService::class);
+		$creativeService = $this->gamServices->get($this->session, CreativeService::class);
 		$statementBuilder = (new StatementBuilder())
 			->orderBy('id ASC')
 			->where('name = :name AND advertiserId = :advertiserId')
@@ -114,7 +114,7 @@ class CreativeManager extends DfpManager
 	public function createCreative($creativeName, $snippet, $advertiserId)
 	{
 		$output = [];
-		$creativeService = $this->dfpServices->get($this->session, CreativeService::class);
+		$creativeService = $this->gamServices->get($this->session, CreativeService::class);
 		$size = new Size();
         $size->setWidth(1);
         $size->setHeight(1);

@@ -2,7 +2,7 @@
 
 namespace App\Scripts;
 
-class SSPScript extends \App\Dfp\DfpManager
+class SSPScript extends \App\Gam\GamManager
 {	
 	protected $orderName;
 	protected $advertiserName;
@@ -22,7 +22,7 @@ class SSPScript extends \App\Dfp\DfpManager
 	protected $adidKeyId;
 	protected $sizeKeyId;
 	protected $valuesList;
-	protected $dfpValuesList;
+	protected $gamValuesList;
 	protected $creativesList;
 	protected $rootAdUnitId;
 
@@ -38,59 +38,59 @@ class SSPScript extends \App\Dfp\DfpManager
 		$this->valuesList = Buckets::createBuckets($this->priceGranularity);
 		
 		//Get the Trafficker Id
-		$this->traffickerId  = (new \App\Dfp\UserManager)->getUserId();
+		$this->traffickerId  = (new \App\Gam\UserManager)->getUserId();
 		echo "TraffickerId: ".$this->traffickerId."\n";
 
 		
 
 		//Get the Advertising Company Id
-		$this->advertiserId = (new \App\Dfp\CompanyManager)->setUpCompany($this->advertiserName);
+		$this->advertiserId = (new \App\Gam\CompanyManager)->setUpCompany($this->advertiserName);
 		echo "AdvertiserName : ".$this->advertiserName."\tAdvertiserId: ".$this->advertiserId."\n";
 
 		//Get the OrderId
-		$this->orderId = (new \App\Dfp\OrderManager)->setUpOrder($this->orderName, $this->advertiserId, $this->traffickerId);
+		$this->orderId = (new \App\Gam\OrderManager)->setUpOrder($this->orderName, $this->advertiserId, $this->traffickerId);
 		echo "OrderName : ".$this->orderName."\tOrderId: ".$this->orderId."\n";
 
 		//Create and get KeyIds 
-		$this->priceKeyId = (new \App\Dfp\KeyManager)->setUpCustomTargetingKey($this->priceKeyName);
+		$this->priceKeyId = (new \App\Gam\KeyManager)->setUpCustomTargetingKey($this->priceKeyName);
 		echo "PriceKeyName : ".$this->priceKeyName."\tPriceKeyId: ".$this->priceKeyId."\n";
-		$this->adidKeyId = (new \App\Dfp\KeyManager)->setUpCustomTargetingKey($this->adidKeyName);
+		$this->adidKeyId = (new \App\Gam\KeyManager)->setUpCustomTargetingKey($this->adidKeyName);
 		echo "AdidKeyName : ".$this->adidKeyName."\tAdidKeyId: ".$this->adidKeyId."\n";
-		$this->sizeKeyId = (new \App\Dfp\KeyManager)->setUpCustomTargetingKey($this->sizeKeyName);
+		$this->sizeKeyId = (new \App\Gam\KeyManager)->setUpCustomTargetingKey($this->sizeKeyName);
 		echo "SizeKeyName : ".$this->sizeKeyName."\tSizeKeyId: ".$this->sizeKeyId."\n";
 
 
 		//Create and get Values
-		$valuesManager = new \App\Dfp\ValueManager;
+		$valuesManager = new \App\Gam\ValueManager;
 		$valuesManager->setKeyId($this->priceKeyId);
-		$this->dfpValuesList = $valuesManager->convertValuesListToDFPValuesList($this->valuesList);
+		$this->gamValuesList = $valuesManager->convertValuesListToGAMValuesList($this->valuesList);
 		echo "Values List Created\n";
 
-		$creativeManager = new \App\Dfp\CreativeManager;
+		$creativeManager = new \App\Gam\CreativeManager;
 		$creativeManager->setSsp($this->ssp)
 			->setAdvertiserId($this->advertiserId);
 		$this->creativesList = $creativeManager->setUpCreatives();
 
 		echo "\n\n".json_encode($this->creativesList)."\n\n";
-		$this->rootAdUnitId = (new \App\Dfp\RootAdUnitManager)->setRootAdUnit();
+		$this->rootAdUnitId = (new \App\Gam\RootAdUnitManager)->setRootAdUnit();
 		echo "rootAdUnitId: ".$this->rootAdUnitId."\n";
 
 		$i = 0;
 
-		foreach($this->dfpValuesList as $dfpValue)
+		foreach($this->gamValuesList as $gamValue)
 		{
-			$lineItemManager = new \App\Dfp\LineItemManager;
+			$lineItemManager = new \App\Gam\LineItemManager;
 			$lineItemManager->setOrderId($this->orderId)
 				->setSizes($this->sizes)
 				->setSsp($this->ssp)
 				->setCurrency($this->currency)
 				->setKeyId($this->priceKeyId)
-				->setValueId($dfpValue['valueId'])
-				->setBucket($dfpValue['valueName'])
+				->setValueId($gamValue['valueId'])
+				->setBucket($gamValue['valueName'])
 				->setRootAdUnitId($this->rootAdUnitId)
 				->setLineItemName();
 			$lineItem = $lineItemManager->setUpLineItem();
-			$licaManager = new \App\Dfp\LineItemCreativeAssociationManager;
+			$licaManager = new \App\Gam\LineItemCreativeAssociationManager;
 			$licaManager->setLineItem($lineItem)
 				->setCreativeList($this->creativesList)
 				->setSizeOverride($this->sizes)
@@ -98,15 +98,15 @@ class SSPScript extends \App\Dfp\DfpManager
 			$i ++;
 			if(empty($this->ssp))
 			{
-				echo "\n\nLine Item Prebid_".$dfpValue['valueName']." created/updated.\n";
+				echo "\n\nLine Item Prebid_".$gamValue['valueName']." created/updated.\n";
 			} else {
-				echo "\n\nLine Item ".ucfirst($this->ssp)."_Prebid_".$dfpValue['valueName']." created/updated.\n";
+				echo "\n\nLine Item ".ucfirst($this->ssp)."_Prebid_".$gamValue['valueName']." created/updated.\n";
 			}
 			
-			echo round(($i/count($this->dfpValuesList))*100, 1)."% done\n\n";
+			echo round(($i/count($this->gamValuesList))*100, 1)."% done\n\n";
 		}
 
-		(new \App\Dfp\OrderManager)->approveOrder($this->orderId);
+		(new \App\Gam\OrderManager)->approveOrder($this->orderId);
 
 	}
 
