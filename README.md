@@ -56,7 +56,18 @@ and you should whether the connexion is OK or not
 ## Creating Line Items
 
 Modify the settings in 
-`/script/hb/HeaderBiddingCreation.php`
+`/script/hb/HeaderBiddingCreation.php`, or create `/Settings.php` to config the settings
+    
+    <?php
+    return array(
+        "namePrefix" => "Insideall - Prebid", // order and advertiser name prefix
+        "ssp" => ['smartadserver'], // Needs to be bidder code defined in prebid documentation, ie appnexus, rubicon, improvedigital, smartadserver
+        "priceGranularity" => "test", // can be 'low', 'med', 'high', 'auto','dense', 'test'
+        "currency"=>"EUR",
+        "sizes" => [[300, 250], [728, 90], [976, 91], [468, 60], [160, 600]]
+    );
+    ?>
+    
 * SSP must be an array of ssp you want to create - please enter here the bidder code defined in prebid documentation
 * Price Granularity are standards, defined on [prebid.org](http://prebid.org/prebid-mobile/adops-price-granularity.html). You can also define a custom granularity by passing an array of buckets in the following format 
     

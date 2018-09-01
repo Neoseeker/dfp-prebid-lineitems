@@ -3,4 +3,6 @@ adsapi_php.ini
 /vendor
 sftp-config.json
 /.vscode
+/.idea
+Settings.php
 
