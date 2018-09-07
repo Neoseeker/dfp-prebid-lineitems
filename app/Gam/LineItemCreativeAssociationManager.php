@@ -38,7 +38,7 @@ class LineItemCreativeAssociationManager extends GamManager
 		return $this;
 	}
 
-	public function setUpLica()
+	public function setUpLica($update)
 	{
         $licasToBeCreated = [];
         $licasToBeUpdated = [];
@@ -55,7 +55,9 @@ class LineItemCreativeAssociationManager extends GamManager
                 array_push($licasToBeCreated, $creative['creativeId']);
             }
         }
-        if(!empty($licasToBeUpdated)){ $this->UpdateLicas($licasToBeUpdated);}
+        if ($update) {
+            if(!empty($licasToBeUpdated)){ $this->UpdateLicas($licasToBeUpdated);}
+        }
         if(!empty($licasToBeCreated)){ $this->CreateLicas($licasToBeCreated);}
 	}
 

@@ -104,7 +104,12 @@ class LineItemManager extends GamManager
         return $this;
     }
 
-    public function setUpLineItem()
+    public function getLineItemName()
+    {
+        return $this->lineItemName;;
+    }
+
+    public function setUpLineItem($update)
     {    
         $lineItem = $this->getLineItem();
         if(empty($lineItem))
@@ -150,6 +155,30 @@ class LineItemManager extends GamManager
                 $output = $lineItem;
             }
         }
+        return $output;
+    }
+
+    public function getAllOrderLineItems()
+    {
+        $output = array();
+
+        $lineItemService = $this->gamServices->get($this->session, LineItemService::class);
+        $statementBuilder = (new StatementBuilder())
+            ->orderBy('id ASC')
+            ->where('orderId = :orderId')
+            ->WithBindVariableValue('orderId', $this->orderId);
+        $data = $lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
+		if($data->getResults() == null)
+		{
+			return $output;
+		}
+		foreach ($data->getResults() as $lineItem) {
+			$output[$lineItem->getName()] = array(
+                "lineItemId"=>$lineItem->getId(),
+                "lineItemName"=>$lineItem->getName()
+            );
+    	}
+
         return $output;
     }
 

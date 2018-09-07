@@ -4,6 +4,8 @@ namespace App\Scripts;
 
 class SSPScript extends \App\Gam\GamManager
 {	
+	const MAX_LINE_ITEMS_PER_ORDER = 450;
+
 	protected $orderName;
 	protected $advertiserName;
 	protected $priceGranularity;
@@ -13,6 +15,7 @@ class SSPScript extends \App\Gam\GamManager
 	protected $sizeKeyName;
 	protected $ssp;
 	protected $currency;
+	protected $updateLineItem;
 
 	//
 	protected $traffickerId;
@@ -35,8 +38,27 @@ class SSPScript extends \App\Gam\GamManager
 
 	public function createAdUnits()
 	{
-		$this->valuesList = Buckets::createBuckets($this->priceGranularity);
-		
+		$allValuesList = Buckets::createBuckets($this->priceGranularity);
+
+		$order_num = floor(sizeof($allValuesList) / self::MAX_LINE_ITEMS_PER_ORDER) + 1;
+
+		$advertiserNameBase = $this->advertiserName;
+		$orderNameBase = $this->orderName;
+
+		for ($i = 0; $i < $order_num; $i++) {
+			$this->valuesList = array_slice($allValuesList, $i * self::MAX_LINE_ITEMS_PER_ORDER, self::MAX_LINE_ITEMS_PER_ORDER);
+			
+			if ($order_num > 1) {
+				$this->advertiserName = $advertiserNameBase." - ".($i+1);
+				$this->orderName = $advertiserNameBase." - ".($i+1);
+			}
+			
+			$this->setupAdUnits();
+		}
+	}
+	
+	private function setupAdUnits()
+	{
 		//Get the Trafficker Id
 		$this->traffickerId  = (new \App\Gam\UserManager)->getUserId();
 		echo "TraffickerId: ".$this->traffickerId."\n";
@@ -75,34 +97,46 @@ class SSPScript extends \App\Gam\GamManager
 		$this->rootAdUnitId = (new \App\Gam\RootAdUnitManager)->setRootAdUnit();
 		echo "rootAdUnitId: ".$this->rootAdUnitId."\n";
 
+		$lineItemManager = new \App\Gam\LineItemManager;
+		$lineItemManager->setOrderId($this->orderId)
+			->setSizes($this->sizes)
+			->setSsp($this->ssp)
+			->setCurrency($this->currency)
+			->setKeyId($this->priceKeyId)
+			->setRootAdUnitId($this->rootAdUnitId);
+
+		$existingLineItems = $lineItemManager->getAllOrderLineItems();
+
 		$i = 0;
 
 		foreach($this->gamValuesList as $gamValue)
 		{
-			$lineItemManager = new \App\Gam\LineItemManager;
-			$lineItemManager->setOrderId($this->orderId)
-				->setSizes($this->sizes)
-				->setSsp($this->ssp)
-				->setCurrency($this->currency)
-				->setKeyId($this->priceKeyId)
-				->setValueId($gamValue['valueId'])
+			$lineItemManager->setValueId($gamValue['valueId'])
 				->setBucket($gamValue['valueName'])
-				->setRootAdUnitId($this->rootAdUnitId)
 				->setLineItemName();
-			$lineItem = $lineItemManager->setUpLineItem();
+				
+			$lineItem = [];
+			if (array_key_exists($lineItemManager->getLineItemName(), $existingLineItems)) {
+				$lineItem = $existingLineItems[$lineItemManager->getLineItemName()];
+			}
+
+			if (empty($lineItem)) {
+				$lineItem = $lineItemManager->setUpLineItem(true);
+			} else {
+				echo "\n\nLine Item ".$lineItemManager->getLineItemName()." has existed.\n\n";			
+				if ($this->updateLineItem) {
+					$lineItem = $lineItemManager->setUpLineItem(false);
+				}
+			}
+
 			$licaManager = new \App\Gam\LineItemCreativeAssociationManager;
 			$licaManager->setLineItem($lineItem)
 				->setCreativeList($this->creativesList)
 				->setSizeOverride($this->sizes)
-				->setUpLica();
+				->setUpLica($this->updateLica);
+
 			$i ++;
-			if(empty($this->ssp))
-			{
-				echo "\n\nLine Item Prebid_".$gamValue['valueName']." created/updated.\n";
-			} else {
-				echo "\n\nLine Item ".ucfirst($this->ssp)."_Prebid_".$gamValue['valueName']." created/updated.\n";
-			}
-			
+			echo "\n\nLine Item ".$lineItemManager->getLineItemName()." created/updated.\n";			
 			echo round(($i/count($this->gamValuesList))*100, 1)."% done\n\n";
 		}
 

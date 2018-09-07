@@ -23,6 +23,8 @@ class HeaderBiddingScript
 				"adidKeyName"=>substr("hb_adid_$ssp",0,20),
 				"sizeKeyName"=>substr("hb_size_$ssp",0,20),
 				"currency"=>$params['currency'],
+				"updateLineItem"=>$params['updateLineItem'],
+				"updateLica"=>$params['updateLica'],
 				"ssp"=>$ssp
 			);
 			$script = new SSPScript($param);
@@ -42,6 +44,8 @@ class HeaderBiddingScript
 			"adidKeyName"=>substr("hb_adid",0,20),
 			"sizeKeyName"=>substr("hb_size",0,20),
 			"currency"=>$params['currency'],
+			"updateLineItem"=>$params['updateLineItem'],
+			"updateLica"=>$params['updateLica'],
 			"ssp"=>""
 		);
 		$script = new SSPScript($params);

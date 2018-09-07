@@ -61,6 +61,8 @@ Modify the settings in
     <?php
     return array(
         "namePrefix" => "Insideall - Prebid", // order and advertiser name prefix
+        "updateLineItem" => true, // Update existing Line Items, true or false
+        "updateLica" => true, // Update existing Licas per Line Items, true or false
         "ssp" => ['smartadserver'], // Needs to be bidder code defined in prebid documentation, ie appnexus, rubicon, improvedigital, smartadserver
         "priceGranularity" => "test", // can be 'low', 'med', 'high', 'auto','dense', 'test'
         "currency"=>"EUR",
