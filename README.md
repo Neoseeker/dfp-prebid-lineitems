@@ -66,7 +66,9 @@ Modify the settings in
         "ssp" => ['smartadserver'], // Needs to be bidder code defined in prebid documentation, ie appnexus, rubicon, improvedigital, smartadserver
         "priceGranularity" => "test", // can be 'low', 'med', 'high', 'auto','dense', 'test'
         "currency"=>"EUR",
-        "sizes" => [[300, 250], [728, 90], [976, 91], [468, 60], [160, 600]]
+        "sizes" => [[300, 250], [728, 90], [976, 91], [468, 60], [160, 600]],
+	    "isSafeFrameCompatible"=>false, // set SafeFrame compatible for creative
+	    "snippet"=>"", // set Code snippet for creative
     );
     ?>
     
