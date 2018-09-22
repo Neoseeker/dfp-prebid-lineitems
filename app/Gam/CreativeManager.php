@@ -18,6 +18,9 @@ class CreativeManager extends GamManager
 {
 	protected $ssp;
 	protected $advertiserId;
+	protected $namePrefix;
+	protected $snippet;
+	protected $isSafeFrameCompatible;
 
 	public function setSsp($ssp)
 	{
@@ -31,6 +34,24 @@ class CreativeManager extends GamManager
 		return $this;
 	}
 
+	public function setNamePrefix($namePrefix)
+	{
+		$this->namePrefix = $namePrefix;
+		return $this;
+	}
+
+	public function setSnippet($snippet)
+	{
+		$this->snippet = $snippet;
+		return $this;
+	}
+
+	public function setIsSafeFrameCompatible($isSafeFrameCompatible)
+	{
+		$this->isSafeFrameCompatible = $isSafeFrameCompatible;
+		return $this;
+	}
+
 	public function setUpCreatives()
 	{	
 		
@@ -39,9 +60,9 @@ class CreativeManager extends GamManager
 		$creativeNameList = [];
 		for ($i=1;$i <= 10; $i++) { 
 			if(empty($this->ssp)){
-				array_push($creativeNameList, "Prebid_Creative_$i");
+				array_push($creativeNameList, $this->namePrefix."_Creative_$i");
 			} else {
-				array_push($creativeNameList, ucfirst($this->ssp)."_Prebid_Creative_$i");
+				array_push($creativeNameList, ucfirst($this->ssp)."_".$this->namePrefix."_Creative_$i");
 			}
 			
 		}
@@ -50,7 +71,12 @@ class CreativeManager extends GamManager
 		{
 			if(empty(($foo = $this->getCreative($creativeName))))
 			{
-				$foo = $this->createCreative($creativeName, $this->createSnippet(), $this->advertiserId);
+				$snippet = $this->snippet;
+				if (empty($snippet)) {
+					$snippet = $this->createSnippet();
+				}
+
+				$foo = $this->createCreative($creativeName, $snippet, $this->advertiserId, $this->isSafeFrameCompatible);
 				
 			}
 			array_push($output, $foo[0]);
@@ -111,7 +137,7 @@ class CreativeManager extends GamManager
 	}
 
 
-	public function createCreative($creativeName, $snippet, $advertiserId)
+	public function createCreative($creativeName, $snippet, $advertiserId, $isSafeFrameCompatible)
 	{
 		$output = [];
 		$creativeService = $this->gamServices->get($this->session, CreativeService::class);
@@ -124,7 +150,7 @@ class CreativeManager extends GamManager
 
         $creative->setName($creativeName)
         	->setAdvertiserId($advertiserId)
-        	->setIsSafeFrameCompatible(false)
+        	->setIsSafeFrameCompatible($isSafeFrameCompatible)
         	->setSnippet($snippet)
         	->setSize($size);
 

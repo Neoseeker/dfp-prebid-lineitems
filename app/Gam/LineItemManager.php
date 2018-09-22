@@ -45,6 +45,7 @@ class LineItemManager extends GamManager
     protected $bucket;
     protected $lineItem;
     protected $lineItemName;
+	protected $namePrefix;
 
 	public function setOrderId($orderId)
     {
@@ -97,9 +98,9 @@ class LineItemManager extends GamManager
     public function setLineItemName()
     {
         if (empty($this->ssp)){
-            $this->lineItemName = "Prebid_".$this->bucket;
+            $this->lineItemName = $this->namePrefix."_".$this->bucket;
         } else {
-            $this->lineItemName = ucfirst($this->ssp)."_Prebid_".$this->bucket;
+            $this->lineItemName = ucfirst($this->ssp)."_".$this->namePrefix."_".$this->bucket;
         }
         return $this;
     }
@@ -108,6 +109,12 @@ class LineItemManager extends GamManager
     {
         return $this->lineItemName;;
     }
+
+	public function setNamePrefix($namePrefix)
+	{
+		$this->namePrefix = $namePrefix;
+		return $this;
+	}
 
     public function setUpLineItem($update)
     {    

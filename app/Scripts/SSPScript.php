@@ -16,6 +16,10 @@ class SSPScript extends \App\Gam\GamManager
 	protected $ssp;
 	protected $currency;
 	protected $updateLineItem;
+	protected $updateLica;
+	protected $namePrefix;
+	protected $isSafeFrameCompatible;
+	protected $snippet;
 
 	//
 	protected $traffickerId;
@@ -90,7 +94,10 @@ class SSPScript extends \App\Gam\GamManager
 
 		$creativeManager = new \App\Gam\CreativeManager;
 		$creativeManager->setSsp($this->ssp)
-			->setAdvertiserId($this->advertiserId);
+			->setAdvertiserId($this->advertiserId)
+			->setNamePrefix($this->namePrefix)
+			->setSnippet($this->snippet)
+			->setIsSafeFrameCompatible($this->isSafeFrameCompatible);
 		$this->creativesList = $creativeManager->setUpCreatives();
 
 		echo "\n\n".json_encode($this->creativesList)."\n\n";
@@ -103,7 +110,8 @@ class SSPScript extends \App\Gam\GamManager
 			->setSsp($this->ssp)
 			->setCurrency($this->currency)
 			->setKeyId($this->priceKeyId)
-			->setRootAdUnitId($this->rootAdUnitId);
+			->setRootAdUnitId($this->rootAdUnitId)
+			->setNamePrefix($this->namePrefix);
 
 		$existingLineItems = $lineItemManager->getAllOrderLineItems();
 

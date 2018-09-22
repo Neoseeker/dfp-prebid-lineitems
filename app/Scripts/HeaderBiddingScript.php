@@ -15,16 +15,19 @@ class HeaderBiddingScript
 		foreach($params['ssp'] as $ssp)
 		{
 			$param = array(
-				"orderName" => $params['namePrefix']." - ".ucfirst($ssp),
-				"advertiserName" => $params['namePrefix']." - ".ucfirst($ssp),
+				"orderName" => (isset($params['namePrefix']) ? $params['namePrefix']." - ".ucfirst($ssp) : "Insideall - Prebid")." - ".ucfirst($ssp),
+				"advertiserName" => (isset($params['namePrefix']) ? $params['namePrefix']." - ".ucfirst($ssp) : "Insideall - Prebid")." - ".ucfirst($ssp),
 				"priceGranularity" => $params["priceGranularity"],
 				"sizes" =>$params["sizes"],
 				"priceKeyName"=>substr("hb_pb_$ssp",0,20),
 				"adidKeyName"=>substr("hb_adid_$ssp",0,20),
 				"sizeKeyName"=>substr("hb_size_$ssp",0,20),
 				"currency"=>$params['currency'],
-				"updateLineItem"=>$params['updateLineItem'],
-				"updateLica"=>$params['updateLica'],
+				"updateLineItem"=>(isset($params['updateLineItem']) ? $params['updateLineItem'] : true),
+				"updateLica"=>(isset($params['updateLica']) ? $params['updateLica'] : true),
+				"namePrefix"=>(isset($params['namePrefix']) ? $params['namePrefix'] : ""),
+				"isSafeFrameCompatible"=>(isset($params['isSafeFrameCompatible']) ? $params['isSafeFrameCompatible'] : false),
+				"snippet"=>(isset($params['snippet']) ? $params['snippet'] : ""),
 				"ssp"=>$ssp
 			);
 			$script = new SSPScript($param);
@@ -36,16 +39,19 @@ class HeaderBiddingScript
 	static function createGlobalAdunits($params)
 	{
 		$params = array(
-			"orderName" => $params['namePrefix'],
-			"advertiserName" => $params['namePrefix'],
+			"orderName" => (isset($params['namePrefix']) ? $params['namePrefix'] : "Insideall - Prebid"),
+			"advertiserName" => (isset($params['namePrefix']) ? $params['namePrefix'] : "Insideall - Prebid"),
 			"priceGranularity" => $params["priceGranularity"],
 			"sizes" =>$params["sizes"],
 			"priceKeyName"=>substr("hb_pb",0,20),
 			"adidKeyName"=>substr("hb_adid",0,20),
 			"sizeKeyName"=>substr("hb_size",0,20),
 			"currency"=>$params['currency'],
-			"updateLineItem"=>$params['updateLineItem'],
-			"updateLica"=>$params['updateLica'],
+			"updateLineItem"=>(isset($params['updateLineItem']) ? $params['updateLineItem'] : true),
+			"updateLica"=>(isset($params['updateLica']) ? $params['updateLica'] : true),
+			"namePrefix"=>(isset($params['namePrefix']) ? $params['namePrefix'] : ""),
+			"isSafeFrameCompatible"=>(isset($params['isSafeFrameCompatible']) ? $params['isSafeFrameCompatible'] : false),
+			"snippet"=>(isset($params['snippet']) ? $params['snippet'] : ""),
 			"ssp"=>""
 		);
 		$script = new SSPScript($params);
