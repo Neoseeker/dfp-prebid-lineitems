@@ -69,6 +69,9 @@ Modify the settings in
         "sizes" => [[300, 250], [728, 90], [976, 91], [468, 60], [160, 600]],
 	    "isSafeFrameCompatible"=>false, // set SafeFrame compatible for creative
 	    "snippet"=>"", // set Code snippet for creative
+        "keyValues"=>[
+            ["key"=>"hb_bidder", "operator"=>"is", "value"=>"appnexus"]
+        ], // Set custom key-values
     );
     ?>
     
