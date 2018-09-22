@@ -46,6 +46,7 @@ class LineItemManager extends GamManager
     protected $lineItem;
     protected $lineItemName;
 	protected $namePrefix;
+	protected $keyValueIds;
 
 	public function setOrderId($orderId)
     {
@@ -113,6 +114,12 @@ class LineItemManager extends GamManager
 	public function setNamePrefix($namePrefix)
 	{
 		$this->namePrefix = $namePrefix;
+		return $this;
+	}
+
+	public function setKeyValueIds($keyValueIds)
+	{
+		$this->keyValueIds = $keyValueIds;
 		return $this;
 	}
 
@@ -257,13 +264,34 @@ class LineItemManager extends GamManager
         $customCriteria->setKeyId($this->keyId);
         $customCriteria->setOperator(CustomCriteriaComparisonOperator::IS);
         $customCriteria->setValueIds([$this->valueId]);
-		
+
+        $customCriteriaList = [];
+        array_push($customCriteriaList, $customCriteria);
+        foreach ($this->keyValueIds as $kv) {
+            $customCriteria = new CustomCriteria();
+            $customCriteria->setKeyId($kv['keyId']);
+
+			if ($kv["operator"] == "is") {
+				$customCriteria->setOperator(CustomCriteriaComparisonOperator::IS);
+			} else {
+				$customCriteria->setOperator(CustomCriteriaComparisonOperator::IS_NOT);
+			}
+    
+            $customCriteria->setValueIds([$kv['valueId']]);
+
+            array_push($customCriteriaList, $customCriteria);
+        }
+
+        $subCustomCriteriaSet = new CustomCriteriaSet();
+        $subCustomCriteriaSet->setLogicalOperator(CustomCriteriaSetLogicalOperator::AND_VALUE);
+        $subCustomCriteriaSet->setChildren($customCriteriaList);
+              
 		$topCustomCriteriaSet = new CustomCriteriaSet();
         $topCustomCriteriaSet->setLogicalOperator(
             CustomCriteriaSetLogicalOperator::OR_VALUE
         );
 		$topCustomCriteriaSet->setChildren(
-            [$customCriteria]
+            [$subCustomCriteriaSet]
         );
         $targeting->setCustomTargeting($topCustomCriteriaSet);
 

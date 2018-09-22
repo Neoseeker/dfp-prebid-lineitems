@@ -20,6 +20,7 @@ class SSPScript extends \App\Gam\GamManager
 	protected $namePrefix;
 	protected $isSafeFrameCompatible;
 	protected $snippet;
+	protected $keyValues;
 
 	//
 	protected $traffickerId;
@@ -114,6 +115,18 @@ class SSPScript extends \App\Gam\GamManager
 			->setNamePrefix($this->namePrefix);
 
 		$existingLineItems = $lineItemManager->getAllOrderLineItems();
+
+		$keyValueIds = [];
+        foreach ($this->keyValues as $kv) {
+            $keyId = (new \App\Gam\KeyManager)->setUpCustomTargetingKey($kv["key"]);
+
+			$valuesManager = new \App\Gam\ValueManager;
+            $valuesManager->setKeyId($keyId);
+            $valuesList = $valuesManager->convertValuesListToGAMValuesList([$kv["value"]]);
+
+            array_push($keyValueIds, ["keyId"=>$keyId, "operator"=>$kv["operator"], "valueId"=>$valuesList[0]['valueId']]);
+		}
+		$lineItemManager->setKeyValueIds($keyValueIds);
 
 		$i = 0;
 

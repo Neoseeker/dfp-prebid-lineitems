@@ -28,6 +28,7 @@ class HeaderBiddingScript
 				"namePrefix"=>(isset($params['namePrefix']) ? $params['namePrefix'] : ""),
 				"isSafeFrameCompatible"=>(isset($params['isSafeFrameCompatible']) ? $params['isSafeFrameCompatible'] : false),
 				"snippet"=>(isset($params['snippet']) ? $params['snippet'] : ""),
+				"keyValues"=>(isset($params['keyValues']) ? $params['keyValues'] : []),
 				"ssp"=>$ssp
 			);
 			$script = new SSPScript($param);
@@ -52,6 +53,7 @@ class HeaderBiddingScript
 			"namePrefix"=>(isset($params['namePrefix']) ? $params['namePrefix'] : ""),
 			"isSafeFrameCompatible"=>(isset($params['isSafeFrameCompatible']) ? $params['isSafeFrameCompatible'] : false),
 			"snippet"=>(isset($params['snippet']) ? $params['snippet'] : ""),
+			"keyValues"=>(isset($params['keyValues']) ? $params['keyValues'] : []),
 			"ssp"=>""
 		);
 		$script = new SSPScript($params);
